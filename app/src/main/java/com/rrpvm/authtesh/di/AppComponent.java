@@ -1,7 +1,9 @@
 package com.rrpvm.authtesh.di;
 
+import javax.inject.Singleton;
 import dagger.Component;
 
 @Component(modules = {NetworkModule.class})
-public interface ApplicationComponent {
+@Singleton
+public interface AppComponent {
 }
