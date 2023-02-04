@@ -8,17 +8,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.rrpvm.authtesh.databinding.FragmentLoginBinding;
-import com.rrpvm.authtesh.presentation.fragment.login.data.LoginViewState;
 import com.rrpvm.authtesh.presentation.fragment.login.viewmodel.LoginViewModel;
 
 
 public class LoginFragment extends Fragment {
-    private FragmentLoginBinding loginFragmentBinding;
-    private LoginViewModel viewModel;
+    @Nullable
+    private FragmentLoginBinding loginFragmentBinding = null;
+    @Nullable
+    private LoginViewModel viewModel = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,12 +40,15 @@ public class LoginFragment extends Fragment {
             if (!loginViewState.getInLoadingState())
                 loginFragmentBinding.groupLoading.setVisibility(View.INVISIBLE);
         });
+        viewModel.getViewEffects().observe(this.getViewLifecycleOwner(), loginViewEffect -> {
+
+        });
         viewModel.onInit();
     }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         loginFragmentBinding = null;
     }
+
 }
