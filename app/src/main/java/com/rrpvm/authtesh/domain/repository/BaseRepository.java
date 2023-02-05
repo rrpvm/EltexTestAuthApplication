@@ -7,6 +7,7 @@ import com.rrpvm.authtesh.domain.entity.common.UiText;
 import com.rrpvm.authtesh.domain.entity.network.Resource;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.net.ssl.SSLHandshakeException;
 
@@ -33,22 +34,22 @@ public class BaseRepository {
     }
 
     private Resource.ResourceFailed handleIOServerException(SSLHandshakeException e) {
-        Log.e(BuildConfig.APP_TAG, e.getLocalizedMessage());
+        e.printStackTrace();
         return new Resource.ResourceFailed(UiText.ioErrorServer());
     }
 
     private Resource.ResourceFailed handleIOException(IOException e) {
-        Log.e(BuildConfig.APP_TAG, e.getLocalizedMessage());
+        e.printStackTrace();
         return new Resource.ResourceFailed(UiText.ioError());
     }
 
     private Resource.ResourceFailed handleHttpException(HttpException e) {
-        Log.e(BuildConfig.APP_TAG, e.getLocalizedMessage());
+        e.printStackTrace();
         return new Resource.ResourceFailed(UiText.ioErrorServer());
     }
 
     private Resource.ResourceFailed handleException(Exception e) {
-        Log.e(BuildConfig.APP_TAG, e.getLocalizedMessage());
+        Log.e(BuildConfig.APP_TAG, e.toString() + Arrays.toString(e.getStackTrace()));
         return new Resource.ResourceFailed(UiText.unknownError());
     }
 }

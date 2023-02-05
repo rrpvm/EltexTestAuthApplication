@@ -12,21 +12,10 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="colorAccent">@color/material_dynamic_neutral0</item>
-        <item name="android:textColorPrimary">@color/material_dynamic_neutral0</item>
-        <item name="android:textColorSecondary">@color/material_dynamic_neutral0</item>
         <item name="android:textAppearance">@android:style/TextAppearance.Material.Display3</item>
+        <item name="buttonStyle">@style/Theme.EltexTestAppLight.AppThemeButton</item>
     </style>
 
     <style name="Theme.EltexTestApp.System." parent="Theme.EltexTestAppLight" />
     <!--Floating label text style-->
-    <style name="MyHintText" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@color/purple_200</item>
-    </style>
-
-    <!--Input field style-->
-    <style name="MyEditText" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">@color/purple_200</item>
-        <item name="colorControlActivated">@color/purple_200</item>
-    </style>
 </resources>

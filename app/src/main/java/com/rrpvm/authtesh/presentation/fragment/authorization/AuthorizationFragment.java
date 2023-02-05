@@ -1,22 +1,42 @@
 package com.rrpvm.authtesh.presentation.fragment.authorization;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.rrpvm.authtesh.R;
 import com.rrpvm.authtesh.databinding.FragmentAuthorizationBinding;
 import com.rrpvm.authtesh.databinding.FragmentLoginBinding;
+import com.rrpvm.authtesh.domain.helpers.EditTextHelper;
+import com.rrpvm.authtesh.presentation.fragment.authorization.data.AuthorizationViewState;
+import com.rrpvm.authtesh.presentation.fragment.login.LoginViewModel;
+import com.rrpvm.authtesh.presentation.fragment.login.data.LoginViewEffect;
 
+import java.util.function.Function;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class AuthorizationFragment extends Fragment {
 
     @Nullable
     private FragmentAuthorizationBinding authorizationBinding = null;
+    private AuthorizationViewModel viewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(AuthorizationViewModel.class);
+    }
 
     @Nullable
     @Override
@@ -29,6 +49,48 @@ public class AuthorizationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (authorizationBinding == null) return;
+        subscribeListeners();
+        setupUi();
+
+        // authorizationBinding.tilUsername
+    }
+
+    private void setupUi() {
+        AuthorizationViewState state = viewModel.getViewState().getValue();
+        if (state != null) {
+            authorizationBinding.tilPassword.getEditText().setText(state.mPassword);
+            authorizationBinding.tilUsername.getEditText().setText(state.mUsername);
+        }
+        EditTextHelper.onTextChanged(authorizationBinding.tilUsername.getEditText(), s -> {
+            viewModel.onUsernameInput(s);
+            return null;
+        });
+        EditTextHelper.onTextChanged(authorizationBinding.tilPassword.getEditText(), s -> {
+            viewModel.onPasswordInput(s);
+            return null;
+        });
+        authorizationBinding.btnLogin.setOnClickListener(v -> {
+            viewModel.onLogInPressed();
+        });
+    }
+
+    private void subscribeListeners() {
+        viewModel.getViewState().observe(this.getViewLifecycleOwner(), viewState -> {
+
+        });
+        viewModel.getViewEffects().observe(this.getViewLifecycleOwner(), loginViewEffect -> {
+            if (loginViewEffect instanceof LoginViewEffect.AuthenticationErrorEffect) {
+                Toast.makeText(getContext(), "fail", Toast.LENGTH_LONG).show();
+            } else if (loginViewEffect instanceof LoginViewEffect.AuthenticationSuccess) {
+                Toast.makeText(getContext(), "success", Toast.LENGTH_LONG).show();
+            } else if (loginViewEffect instanceof LoginViewEffect.ShowText) {
+                Toast.makeText(
+                        getContext(),
+                        getString(((LoginViewEffect.ShowText) loginViewEffect).uiText.getmStringResource()),
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
     }
 
     @Override

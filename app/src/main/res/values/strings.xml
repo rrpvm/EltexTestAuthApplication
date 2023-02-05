@@ -3,4 +3,8 @@
     <string name="password_hint">password</string>
     <string name="login_hint">login</string>
     <string name="authorize_btn">log in</string>
+    <string name="authorization">Authorization</string>
+    <string name="unknown_error">An unexpected error has occurred</string>
+    <string name="io_error">No network connection</string>
+    <string name="io_server_error">There is no connection to the server, repeat later</string>
 </resources>

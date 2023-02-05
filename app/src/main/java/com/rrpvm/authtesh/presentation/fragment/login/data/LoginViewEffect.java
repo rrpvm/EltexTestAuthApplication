@@ -16,8 +16,8 @@ public abstract class LoginViewEffect {
     }
 
     public static class AuthenticationSuccess extends LoginViewEffect {
-    }
 
+    }
     public static class InitState extends LoginViewEffect {
     }
 }

@@ -14,14 +14,14 @@ public class UiText {
     }
 
     public static UiText ioErrorServer() {
-        return new UiText(R.string.app_name);
+        return new UiText(R.string.io_server_error);
     }
 
     public static UiText unknownError() {
-        return new UiText(R.string.app_name);
+        return new UiText(R.string.unknown_error);
     }
 
     public static UiText ioError() {
-        return new UiText(R.string.app_name);
+        return new UiText(R.string.io_error);
     }
 }

@@ -13,7 +13,6 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.rrpvm.authtesh.databinding.FragmentLoginBinding;
 import com.rrpvm.authtesh.presentation.fragment.login.data.LoginViewEffect;
-import com.rrpvm.authtesh.presentation.fragment.login.viewmodel.LoginViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -40,10 +39,6 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (loginFragmentBinding == null || viewModel == null) return;
-        viewModel.getViewState().observe(this.getViewLifecycleOwner(), loginViewState -> {
-            if (!loginViewState.getInLoadingState())
-                loginFragmentBinding.groupLoading.setVisibility(View.INVISIBLE);
-        });
         viewModel.getViewEffects().observe(this.getViewLifecycleOwner(), loginViewEffect -> {
             if (loginViewEffect instanceof LoginViewEffect.AuthenticationErrorEffect) {
                 actionGoAuthorizationScreen();
