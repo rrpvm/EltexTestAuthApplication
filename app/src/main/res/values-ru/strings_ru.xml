@@ -7,4 +7,5 @@
     <string name="unknown_error">Произошла непредвиденная ошибка</string>
     <string name="io_error">Отсутствует подключение к сети</string>
     <string name="io_server_error">Отсутствует подключение к серверу, повторите позже</string>
+    <string name="wrong_credentials">Неправельные логин или пароль</string>
 </resources>

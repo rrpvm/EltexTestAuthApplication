@@ -8,26 +8,29 @@ import com.rrpvm.authtesh.domain.entity.network.Resource;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.SSLHandshakeException;
 
-import retrofit2.Call;
 import retrofit2.HttpException;
-import retrofit2.Response;
 
 public class BaseRepository {
-    protected final <T> Resource<T> wrapRequest(Call<T> request) {
-        T result = null;
+    protected final <T> Resource<T> wrapRequest(Callable<T> request) {
+        T result;
         try {
-            Response<T> response = request.execute();
-            result = response.body();
+            try {
+                result = request.call();
+            } catch (ExecutionException ep) {
+                throw ep.getCause();
+            }
         } catch (SSLHandshakeException e) {
             return handleIOServerException(e);
         } catch (IOException e) {
             return handleIOException(e);
         } catch (HttpException e) {
             return handleHttpException(e);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return handleException(e);
         }
         return new Resource.ResourceSuccess<T>(result);
@@ -40,15 +43,21 @@ public class BaseRepository {
 
     private Resource.ResourceFailed handleIOException(IOException e) {
         e.printStackTrace();
-        return new Resource.ResourceFailed(UiText.ioError());
+        UiText output;
+        if (e.getMessage() == null) output = UiText.ioError();
+        else output = new UiText.UiTextDynamicString(e.getMessage());
+        return new Resource.ResourceFailed(output);
     }
 
     private Resource.ResourceFailed handleHttpException(HttpException e) {
         e.printStackTrace();
-        return new Resource.ResourceFailed(UiText.ioErrorServer());
+        UiText output;
+        if (e.message() == null) output = UiText.ioErrorServer();
+        else output = new UiText.UiTextDynamicString(e.message());
+        return new Resource.ResourceFailed(output);
     }
 
-    private Resource.ResourceFailed handleException(Exception e) {
+    private Resource.ResourceFailed handleException(Throwable e) {
         Log.e(BuildConfig.APP_TAG, e.toString() + Arrays.toString(e.getStackTrace()));
         return new Resource.ResourceFailed(UiText.unknownError());
     }

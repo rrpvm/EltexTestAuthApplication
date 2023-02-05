@@ -1,27 +1,45 @@
 package com.rrpvm.authtesh.domain.entity.common;
 
+import androidx.annotation.StringRes;
+
 import com.rrpvm.authtesh.R;
 
-public class UiText {
-    private final int mStringResource;
+public abstract class UiText {
 
-    public int getmStringResource() {
-        return mStringResource;
+    public static class UiTextDynamicString extends UiText {
+        private final String mMessage;
+
+        public UiTextDynamicString(String mMessage) {
+            this.mMessage = mMessage;
+        }
+
+        public String getMessage() {
+            return mMessage;
+        }
     }
 
-    public UiText(int mStringResource) {
-        this.mStringResource = mStringResource;
+    public static class UiTextResourceString extends UiText {
+        private final int mStringResource;
+
+        public int getStringResource() {
+            return mStringResource;
+        }
+
+        public UiTextResourceString(@StringRes int mStringResource) {
+            this.mStringResource = mStringResource;
+        }
     }
+
 
     public static UiText ioErrorServer() {
-        return new UiText(R.string.io_server_error);
+        return new UiTextResourceString(R.string.io_server_error);
     }
 
     public static UiText unknownError() {
-        return new UiText(R.string.unknown_error);
+        return new UiTextResourceString(R.string.unknown_error);
     }
 
     public static UiText ioError() {
-        return new UiText(R.string.io_error);
+        return new UiTextResourceString(R.string.io_error);
     }
 }

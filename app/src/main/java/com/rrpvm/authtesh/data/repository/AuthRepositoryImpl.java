@@ -10,6 +10,7 @@ import com.rrpvm.authtesh.domain.repository.BaseRepository;
 
 
 import java.util.Optional;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,8 +28,7 @@ public class AuthRepositoryImpl extends BaseRepository implements AuthRepository
 
     @Override
     public Resource<GetTokenDto> getToken(String username, String password) {
-        Call<GetTokenDto> call = testApi.getToken("password", username, password, getAuthorizationHeader());
-        return wrapRequest(call);
+        return wrapRequest(() -> testApi.getToken("password", username, password, getAuthorizationHeader()).get());
     }
 
     @Override

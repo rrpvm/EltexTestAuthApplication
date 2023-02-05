@@ -17,6 +17,8 @@ import com.rrpvm.authtesh.R;
 import com.rrpvm.authtesh.databinding.FragmentAuthorizationBinding;
 import com.rrpvm.authtesh.databinding.FragmentLoginBinding;
 import com.rrpvm.authtesh.domain.helpers.EditTextHelper;
+import com.rrpvm.authtesh.domain.helpers.ToastHelper;
+import com.rrpvm.authtesh.presentation.fragment.authorization.data.AuthorizationViewEffect;
 import com.rrpvm.authtesh.presentation.fragment.authorization.data.AuthorizationViewState;
 import com.rrpvm.authtesh.presentation.fragment.login.LoginViewModel;
 import com.rrpvm.authtesh.presentation.fragment.login.data.LoginViewEffect;
@@ -76,19 +78,20 @@ public class AuthorizationFragment extends Fragment {
 
     private void subscribeListeners() {
         viewModel.getViewState().observe(this.getViewLifecycleOwner(), viewState -> {
-
+            if (viewState == null) return;
+            if (viewState.bLastAttemptFailed) {
+                authorizationBinding.tilPassword.setError(getString(R.string.wrong_credentials));
+                authorizationBinding.tilUsername.setError(getString(R.string.wrong_credentials));
+            } else {
+                authorizationBinding.tilPassword.setError(null);
+                authorizationBinding.tilUsername.setError(null);
+            }
         });
         viewModel.getViewEffects().observe(this.getViewLifecycleOwner(), loginViewEffect -> {
-            if (loginViewEffect instanceof LoginViewEffect.AuthenticationErrorEffect) {
-                Toast.makeText(getContext(), "fail", Toast.LENGTH_LONG).show();
-            } else if (loginViewEffect instanceof LoginViewEffect.AuthenticationSuccess) {
+            if (loginViewEffect instanceof AuthorizationViewEffect.AuthenticationSuccess) {
                 Toast.makeText(getContext(), "success", Toast.LENGTH_LONG).show();
-            } else if (loginViewEffect instanceof LoginViewEffect.ShowText) {
-                Toast.makeText(
-                        getContext(),
-                        getString(((LoginViewEffect.ShowText) loginViewEffect).uiText.getmStringResource()),
-                        Toast.LENGTH_SHORT
-                ).show();
+            } else if (loginViewEffect instanceof AuthorizationViewEffect.ShowText) {
+                ToastHelper.showText(((AuthorizationViewEffect.ShowText) loginViewEffect).uiText, getContext());
             }
         });
     }
