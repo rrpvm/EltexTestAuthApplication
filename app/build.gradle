@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id "androidx.navigation.safeargs"
 }
 apply plugin: 'com.google.dagger.hilt.android'
 android {
@@ -62,8 +63,7 @@ dependencies {
     annotationProcessor "com.google.dagger:hilt-compiler:$hilt_version"
 
     //navigation
-    implementation 'androidx.navigation:navigation-common:2.5.3'
-    implementation 'androidx.navigation:navigation-fragment:2.5.3'
-    implementation 'androidx.navigation:navigation-runtime:2.5.3'
-    implementation 'androidx.navigation:navigation-ui:2.5.3'
+    implementation "androidx.navigation:navigation-runtime:$navigationVersion"
+    implementation "androidx.navigation:navigation-fragment:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui:$navigationVersion"
 }

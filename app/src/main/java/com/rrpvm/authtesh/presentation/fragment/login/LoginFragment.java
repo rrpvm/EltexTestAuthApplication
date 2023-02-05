@@ -9,8 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.rrpvm.authtesh.databinding.FragmentLoginBinding;
+import com.rrpvm.authtesh.presentation.fragment.login.data.LoginViewEffect;
 import com.rrpvm.authtesh.presentation.fragment.login.viewmodel.LoginViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -43,7 +45,9 @@ public class LoginFragment extends Fragment {
                 loginFragmentBinding.groupLoading.setVisibility(View.INVISIBLE);
         });
         viewModel.getViewEffects().observe(this.getViewLifecycleOwner(), loginViewEffect -> {
-
+            if (loginViewEffect instanceof LoginViewEffect.AuthenticationErrorEffect) {
+                actionGoAuthorizationScreen();
+            }
         });
         viewModel.onInit();
     }
@@ -54,4 +58,7 @@ public class LoginFragment extends Fragment {
         loginFragmentBinding = null;
     }
 
+    private void actionGoAuthorizationScreen() {
+        NavHostFragment.findNavController(this).navigate(LoginFragmentDirections.fragmentLoginToAuthorize());
+    }
 }
