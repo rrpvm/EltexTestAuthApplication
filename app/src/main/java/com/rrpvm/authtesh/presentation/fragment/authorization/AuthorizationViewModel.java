@@ -9,7 +9,6 @@ import com.rrpvm.authtesh.domain.entity.network.Resource;
 import com.rrpvm.authtesh.domain.usecase.GetTokenUseCase;
 import com.rrpvm.authtesh.domain.usecase.SetCurrentTokenUseCase;
 import com.rrpvm.authtesh.presentation.fragment.authorization.data.AuthorizationViewEffect;
-import com.rrpvm.authtesh.presentation.fragment.login.data.LoginViewEffect;
 import com.rrpvm.authtesh.presentation.fragment.authorization.data.AuthorizationViewState;
 
 import javax.inject.Inject;
@@ -56,11 +55,14 @@ public class AuthorizationViewModel extends ViewModel {
         AuthorizationViewState state = mViewState.getValue();
         if (state == null) return;
         if (getTokenJob != null && !getTokenJob.isDisposed()) getTokenJob.dispose();
+        mViewState.setValue(state.setInLoading(true));
         getTokenJob = Single.fromCallable(() -> {
             return getTokenUseCase.invoke(state.mUsername, state.mPassword);
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(getTokenDtoResource -> {
+            if (mViewState.getValue() == null) return;
+            mViewState.setValue(mViewState.getValue().setInLoading(false));
             if (getTokenDtoResource instanceof Resource.ResourceFailed) {
-                mViewState.postValue(state.setLastError(true));
+                mViewState.postValue(mViewState.getValue().setLastError(true));
                 mViewEffects.setValue(new AuthorizationViewEffect.ShowText(((Resource.ResourceFailed<GetTokenDto>) getTokenDtoResource).getUiText()));
             } else if (getTokenDtoResource instanceof Resource.ResourceSuccess) {
                 mViewEffects.setValue(new AuthorizationViewEffect.AuthenticationSuccess());

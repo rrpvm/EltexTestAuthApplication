@@ -20,7 +20,6 @@ import retrofit2.Call;
 @Singleton
 public class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
     private final TestApi testApi;
-
     @Inject
     public AuthRepositoryImpl(TestApi testApi) {
         this.testApi = testApi;
@@ -37,7 +36,6 @@ public class AuthRepositoryImpl extends BaseRepository implements AuthRepository
         if (token != null) return Optional.of(token);
         return Optional.empty();
     }
-
     @Override
     public void setCurrentToken(String token) {
         Hawk.put(TOKEN_REQUEST_KEY, token);

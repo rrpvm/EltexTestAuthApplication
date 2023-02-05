@@ -1,8 +1,7 @@
 package com.rrpvm.authtesh.presentation.fragment.authorization;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +14,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.rrpvm.authtesh.R;
 import com.rrpvm.authtesh.databinding.FragmentAuthorizationBinding;
-import com.rrpvm.authtesh.databinding.FragmentLoginBinding;
 import com.rrpvm.authtesh.domain.helpers.EditTextHelper;
 import com.rrpvm.authtesh.domain.helpers.ToastHelper;
 import com.rrpvm.authtesh.presentation.fragment.authorization.data.AuthorizationViewEffect;
 import com.rrpvm.authtesh.presentation.fragment.authorization.data.AuthorizationViewState;
-import com.rrpvm.authtesh.presentation.fragment.login.LoginViewModel;
-import com.rrpvm.authtesh.presentation.fragment.login.data.LoginViewEffect;
-
-import java.util.function.Function;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class AuthorizationFragment extends Fragment {
-
     @Nullable
     private FragmentAuthorizationBinding authorizationBinding = null;
     private AuthorizationViewModel viewModel;
@@ -86,6 +79,11 @@ public class AuthorizationFragment extends Fragment {
                 authorizationBinding.tilPassword.setError(null);
                 authorizationBinding.tilUsername.setError(null);
             }
+            authorizationBinding.btnLogin.setEnabled(!viewState.bInLoading);
+            if (!viewState.bInLoading) {
+                authorizationBinding.btnLogin.setBackgroundColor(getContext().getColor(R.color.mainUiColor));
+            } else
+                authorizationBinding.btnLogin.setBackgroundColor(Color.parseColor("#805d2ed5"));//hard code, но у меня уже просто нет времени на вынесение в ресурсы и тд
         });
         viewModel.getViewEffects().observe(this.getViewLifecycleOwner(), loginViewEffect -> {
             if (loginViewEffect instanceof AuthorizationViewEffect.AuthenticationSuccess) {

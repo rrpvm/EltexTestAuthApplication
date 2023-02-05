@@ -21,13 +21,13 @@ public class AuthorizationViewState implements Cloneable {
     }
 
     public AuthorizationViewState() {
-        bInLoading = true;
+        bInLoading = false;
         bLastAttemptFailed = false;
         mUsername = EMPTY_STRING;
         mPassword = EMPTY_STRING;
     }
 
-    public AuthorizationViewState changeInLoading(Boolean bInLoading) {
+    public AuthorizationViewState setInLoading(Boolean bInLoading) {
         return new AuthorizationViewState(bInLoading, bLastAttemptFailed, mUsername, mPassword);
     }
 
