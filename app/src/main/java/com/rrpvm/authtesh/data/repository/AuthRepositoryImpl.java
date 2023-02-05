@@ -1,21 +1,23 @@
 package com.rrpvm.authtesh.data.repository;
 
-import com.rrpvm.authtesh.R;
+import com.orhanobut.hawk.Hawk;
+import com.rrpvm.authtesh.BuildConfig;
 import com.rrpvm.authtesh.data.network.TestApi;
+import com.rrpvm.authtesh.data.network.dto.GetTokenDto;
 import com.rrpvm.authtesh.domain.entity.network.Resource;
 import com.rrpvm.authtesh.domain.repository.AuthRepository;
+import com.rrpvm.authtesh.domain.repository.BaseRepository;
 
-import java.io.IOException;
-import java.util.Arrays;
+
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import retrofit2.Call;
-import retrofit2.Response;
 
 @Singleton
-public class AuthRepositoryImpl implements AuthRepository {
+public class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
     private final TestApi testApi;
 
     @Inject
@@ -24,17 +26,27 @@ public class AuthRepositoryImpl implements AuthRepository {
     }
 
     @Override
-    public Resource<String> getToken(String username, char[] password) {
-        String pass = Arrays.toString(password);
-        String constant = "Basic ImFuZHJvaWQtY2xpZW50OnBhc3N3b3JkIg==";
-        try {
-            Call<String> call = testApi.getToken("password", username, pass, constant);
-            Response<String> response = call.execute();
-            pass = null;
-            return new Resource.ResourceSuccess(response.body(), response.code());
-        } catch (IOException e) {
-            pass = null;
-            return new Resource.ResourceFailed(R.string.app_name);
-        }
+    public Resource<GetTokenDto> getToken(String username, String password) {
+        Call<GetTokenDto> call = testApi.getToken("password", username, password, getAuthorizationHeader());
+        return wrapRequest(call);
     }
+
+    @Override
+    public Optional<String> getCurrentToken() {
+        String token = Hawk.get(TOKEN_REQUEST_KEY);
+        if (token != null) return Optional.of(token);
+        return Optional.empty();
+    }
+
+    @Override
+    public void setCurrentToken(String token) {
+        Hawk.put(TOKEN_REQUEST_KEY, token);
+    }
+
+    //на будущее - можно будет переделать под не констатнту, где мы сами через Base64 encoder создаем хедер, либо любой другой способ
+    private String getAuthorizationHeader() {
+        return "Basic YW5kcm9pZC1jbGllbnQ6cGFzc3dvcmQ=";
+    }
+
+    private static final String TOKEN_REQUEST_KEY = String.format("%s:access_token", BuildConfig.APP_TAG);
 }

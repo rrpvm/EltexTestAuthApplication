@@ -1,33 +1,29 @@
 package com.rrpvm.authtesh.domain.entity.network;
 
-public abstract class Resource<T> {
-    public static class ResourceSuccess<T> extends Resource<T> {
-        private T mData;
-        private int mCode;
+import com.rrpvm.authtesh.domain.entity.common.UiText;
+
+public interface Resource<T> {
+    class ResourceSuccess<T> implements Resource<T> {
+        private final T mData;
 
         public T getData() {
             return mData;
         }
 
-        public int getCode() {
-            return mCode;
-        }
-
-        public ResourceSuccess(T data, int code) {
+        public ResourceSuccess(T data) {
             mData = data;
-            mCode = code;
         }
     }
 
-    public static class ResourceFailed<T> extends Resource<T> {
-        private int mStringResource;
+    class ResourceFailed<T> implements Resource<T> {
+        private UiText mUiText;
 
-        public int getStringResource() {
-            return mStringResource;
+        public UiText getUiText() {
+            return mUiText;
         }
 
-        public ResourceFailed(int mStringResource) {
-            this.mStringResource = mStringResource;
+        public ResourceFailed(UiText mUiText) {
+            this.mUiText = mUiText;
         }
 
     }

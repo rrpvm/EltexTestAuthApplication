@@ -1,5 +1,6 @@
 package com.rrpvm.authtesh.domain.usecase;
 
+import com.rrpvm.authtesh.data.network.dto.GetTokenDto;
 import com.rrpvm.authtesh.domain.entity.network.Resource;
 import com.rrpvm.authtesh.domain.repository.AuthRepository;
 
@@ -13,7 +14,7 @@ public class GetTokenUseCase {
         this.repository = repository;
     }
 
-    Resource<String> invoke(String name, char[] password) {
+    public Resource<GetTokenDto> invoke(String name, String password) {
         return repository.getToken(name, password);
     }
 }
