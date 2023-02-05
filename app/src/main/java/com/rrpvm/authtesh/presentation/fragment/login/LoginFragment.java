@@ -13,7 +13,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.rrpvm.authtesh.databinding.FragmentLoginBinding;
 import com.rrpvm.authtesh.presentation.fragment.login.viewmodel.LoginViewModel;
 
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class LoginFragment extends Fragment {
     @Nullable
     private FragmentLoginBinding loginFragmentBinding = null;
@@ -45,6 +47,7 @@ public class LoginFragment extends Fragment {
         });
         viewModel.onInit();
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

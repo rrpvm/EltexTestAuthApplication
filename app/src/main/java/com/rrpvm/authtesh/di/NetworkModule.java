@@ -3,14 +3,18 @@ package com.rrpvm.authtesh.di;
 import android.util.Log;
 
 import com.rrpvm.authtesh.BuildConfig;
+import com.rrpvm.authtesh.data.network.TestApi;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Qualifier;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
+import dagger.hilt.android.scopes.ViewModelScoped;
+import dagger.hilt.components.SingletonComponent;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Converter;
@@ -18,10 +22,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-@InstallIn(AppComponent.class)
+@InstallIn(SingletonComponent.class)
 public class NetworkModule {
 
     @Provides
+    @Singleton
     public HttpLoggingInterceptor httpLoggingInterceptor() {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
@@ -53,13 +58,22 @@ public class NetworkModule {
         return GsonConverterFactory.create();
     }
 
+
     @Provides
     @Singleton
     public Retrofit provideRetrofit(OkHttpClient okHttpClient, Converter.Factory converterFactory) {
         return new Retrofit.Builder()
-                .baseUrl("127.0.0.1")
+                .baseUrl(BASE_URL_API)
                 .client(okHttpClient)
                 .addConverterFactory(converterFactory)
                 .build();
     }
+
+    @Provides
+    @Singleton
+    public TestApi provideTestApi(Retrofit retrofit) {
+        return retrofit.create(TestApi.class);
+    }
+
+    private final static String BASE_URL_API = "http://smart.eltex-co.ru:8271/api/v1/";
 }
