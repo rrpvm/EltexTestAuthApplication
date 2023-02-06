@@ -76,7 +76,9 @@ public class AuthorizationViewModel extends ViewModel {
     private void onAuthorized(TokenModel result) {
         setCurrentTokenUseCase.invoke(result.mAccessToken);
     }
-
+    void clearEffects(){
+        mViewEffects.setValue(new AuthorizationViewEffect.InitState());
+    }
     @Override
     protected void onCleared() {
         super.onCleared();

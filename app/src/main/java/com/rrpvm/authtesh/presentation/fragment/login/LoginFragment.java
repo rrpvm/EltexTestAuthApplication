@@ -41,12 +41,14 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if (loginFragmentBinding == null || viewModel == null) return;
         viewModel.getViewEffects().observe(this.getViewLifecycleOwner(), loginViewEffect -> {
+            if (loginViewEffect instanceof LoginViewEffect.InitState) return;
             if (loginViewEffect instanceof LoginViewEffect.AuthenticationErrorEffect) {
                 actionGoAuthorizationScreen();
             }
             if (loginViewEffect instanceof LoginViewEffect.AuthenticationSuccess) {
                 actionGoUserScreen(((LoginViewEffect.AuthenticationSuccess) loginViewEffect).userInfoModel);
             }
+            viewModel.clearEffects();
         });
         viewModel.onInit();
     }

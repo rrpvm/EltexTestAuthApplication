@@ -10,18 +10,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.rrpvm.authtesh.data.network.sub_data.HouseShortDataDto;
 import com.rrpvm.authtesh.databinding.FragmentUserInfoBinding;
 import com.rrpvm.authtesh.domain.entity.common.UiText;
 import com.rrpvm.authtesh.domain.helpers.TextViewsHelper;
 import com.rrpvm.authtesh.domain.helpers.ToastHelper;
+import com.rrpvm.authtesh.presentation.fragment.user_info.data.UserInfoViewEffect;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -61,8 +60,7 @@ public class UserInfoFragment extends Fragment {
                 TextViewsHelper.setTextValueOrEmpty(binding.tvEmail.getEditText(), state.userInfo.email);
                 TextViewsHelper.setTextValueOrEmpty(binding.tvUsername.getEditText(), state.userInfo.username);
                 TextViewsHelper.setTextValueOrEmpty(binding.tvRoleId.getEditText(), state.userInfo.roleId);
-                List<HouseShortDataDto> list = new ArrayList<>();
-                list = state.userInfo.ownedHouseIds.stream().map(it -> {
+                List<HouseShortDataDto> list = state.userInfo.ownedHouseIds.stream().map(it -> {
                     HouseShortDataDto pure = state.userInfo.access.get(it);
                     if (pure == null) return null;
                     return new HouseShortDataDto(it, pure.title, pure.level);
@@ -70,12 +68,26 @@ public class UserInfoFragment extends Fragment {
                 adapter.setData(list);
             }
         });
+        viewModel.getViewEffect().observe(this.getViewLifecycleOwner(), effect -> {
+            if (effect instanceof UserInfoViewEffect.InitViewEffect) return;
+            if (effect instanceof UserInfoViewEffect.GoHouseScreenViewEffect) {
+                actionGoHouseScreen(((UserInfoViewEffect.GoHouseScreenViewEffect) effect).houseId);
+                viewModel.clearEffects();
+            } else if (effect instanceof UserInfoViewEffect.ShowText) {
+                ToastHelper.showText(((UserInfoViewEffect.ShowText) effect).uiText, getContext());
+                viewModel.clearEffects();
+            }
+        });
     }
 
     public HousesAdapter.HouseAdapterCallbacks.ItemClickListener onHouseItemClick() {
         return houseId -> {
-            ToastHelper.showText(new UiText.UiTextDynamicString(houseId), getContext());
+            viewModel.onHouseClick(houseId);
         };
+    }
+
+    private void actionGoHouseScreen(String houseId) {
+        NavHostFragment.findNavController(this).navigate(UserInfoFragmentDirections.actionFragmentUserScreenToFramgnetHouseScreen(houseId));
     }
 
     @Override

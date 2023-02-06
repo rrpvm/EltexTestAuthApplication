@@ -91,12 +91,16 @@ public class AuthorizationFragment extends Fragment {
                 authorizationBinding.btnLogin.setBackgroundColor(Color.parseColor("#805d2ed5"));//hard code, но у меня уже просто нет времени на вынесение в ресурсы и тд
         });
         viewModel.getViewEffects().observe(this.getViewLifecycleOwner(), loginViewEffect -> {
+            if (loginViewEffect instanceof AuthorizationViewEffect.InitState) {
+                return;
+            }
             if (loginViewEffect instanceof AuthorizationViewEffect.AuthenticationSuccess) {
                 actionGoUserScreen();
                 Toast.makeText(getContext(), R.string.authorization_success, Toast.LENGTH_LONG).show();
             } else if (loginViewEffect instanceof AuthorizationViewEffect.ShowText) {
                 ToastHelper.showText(((AuthorizationViewEffect.ShowText) loginViewEffect).uiText, getContext());
             }
+            viewModel.clearEffects();
         });
     }
 

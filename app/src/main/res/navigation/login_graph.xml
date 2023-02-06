@@ -40,5 +40,17 @@
             android:name="prefetched_data"
             app:argType="com.rrpvm.authtesh.domain.model.UserInfoModel"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_fragment_user_screen_to_framgnet_house_screen"
+            app:destination="@id/framgnet_house_screen" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/framgnet_house_screen"
+        android:name="com.rrpvm.authtesh.presentation.fragment.house.HouseFragment"
+        tools:layout="@layout/fragment_house">
+        <argument
+            android:name="houseId"
+            app:argType="string" />
     </fragment>
 </navigation>

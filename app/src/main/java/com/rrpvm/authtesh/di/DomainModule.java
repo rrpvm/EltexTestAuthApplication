@@ -3,6 +3,7 @@ package com.rrpvm.authtesh.di;
 import com.rrpvm.authtesh.domain.repository.AuthRepository;
 import com.rrpvm.authtesh.domain.repository.UserRepository;
 import com.rrpvm.authtesh.domain.usecase.GetCurrentTokenUseCase;
+import com.rrpvm.authtesh.domain.usecase.GetHouseInfoUseCase;
 import com.rrpvm.authtesh.domain.usecase.GetTokenUseCase;
 import com.rrpvm.authtesh.domain.usecase.GetUserInfoUseCase;
 import com.rrpvm.authtesh.domain.usecase.SetCurrentTokenUseCase;
@@ -33,5 +34,9 @@ public class DomainModule {
     @Provides
     public GetUserInfoUseCase provideGetUserInfoUseCase(UserRepository repository) {
         return new GetUserInfoUseCase(repository);
+    }
+    @Provides
+    public GetHouseInfoUseCase provideGetHouseInfoUseCase(UserRepository repository) {
+        return new GetHouseInfoUseCase(repository);
     }
 }

@@ -1,8 +1,10 @@
 package com.rrpvm.authtesh.data.repository;
 
+import com.rrpvm.authtesh.data.network.dto.GetHouseInfoDto;
 import com.rrpvm.authtesh.data.network.dto.GetUserInfoDto;
 import com.rrpvm.authtesh.data.network.source.TestApi;
 import com.rrpvm.authtesh.domain.entity.network.Resource;
+import com.rrpvm.authtesh.domain.model.HouseModel;
 import com.rrpvm.authtesh.domain.model.UserInfoModel;
 import com.rrpvm.authtesh.domain.repository.BaseRepository;
 import com.rrpvm.authtesh.domain.repository.UserRepository;
@@ -24,6 +26,14 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
         return wrapRequestWithStatusCode(
                 () -> testApi.getUserInfo().get(),
                 GetUserInfoDto::toUserInfo
+        );
+    }
+
+    @Override
+    public Resource<HouseModel> getHouseInfo(String id) {
+        return wrapRequestWithStatusCode(
+                () -> testApi.getHouse(id).get(),
+                GetHouseInfoDto::toDomain
         );
     }
 }

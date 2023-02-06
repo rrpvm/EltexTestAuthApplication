@@ -54,6 +54,9 @@ public class LoginViewModel extends ViewModel {
             mViewEffects.setValue(new LoginViewEffect.AuthenticationErrorEffect());
         }
     }
+    public void clearEffects(){
+        mViewEffects.setValue(new LoginViewEffect.InitState());
+    }
 
     public LiveData<LoginViewEffect> getViewEffects() {
         return mViewEffects;
