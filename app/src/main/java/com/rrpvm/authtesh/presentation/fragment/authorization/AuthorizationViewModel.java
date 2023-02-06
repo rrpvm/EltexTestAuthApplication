@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.rrpvm.authtesh.data.network.dto.GetTokenDto;
 import com.rrpvm.authtesh.domain.entity.network.Resource;
+import com.rrpvm.authtesh.domain.model.TokenModel;
 import com.rrpvm.authtesh.domain.usecase.GetTokenUseCase;
 import com.rrpvm.authtesh.domain.usecase.SetCurrentTokenUseCase;
 import com.rrpvm.authtesh.presentation.fragment.authorization.data.AuthorizationViewEffect;
@@ -63,15 +64,15 @@ public class AuthorizationViewModel extends ViewModel {
             mViewState.setValue(mViewState.getValue().setInLoading(false));
             if (getTokenDtoResource instanceof Resource.ResourceFailed) {
                 mViewState.postValue(mViewState.getValue().setLastError(true));
-                mViewEffects.setValue(new AuthorizationViewEffect.ShowText(((Resource.ResourceFailed<GetTokenDto>) getTokenDtoResource).getUiText()));
+                mViewEffects.setValue(new AuthorizationViewEffect.ShowText(((Resource.ResourceFailed<TokenModel>) getTokenDtoResource).getUiText()));
             } else if (getTokenDtoResource instanceof Resource.ResourceSuccess) {
-                onAuthorized(((Resource.ResourceSuccess<GetTokenDto>) getTokenDtoResource).getData());
+                onAuthorized(((Resource.ResourceSuccess<TokenModel>) getTokenDtoResource).getData());
                 mViewEffects.setValue(new AuthorizationViewEffect.AuthenticationSuccess());
             }
         });
     }
 
-    private void onAuthorized(GetTokenDto result) {
+    private void onAuthorized(TokenModel result) {
         setCurrentTokenUseCase.invoke(result.mAccessToken);
     }
 

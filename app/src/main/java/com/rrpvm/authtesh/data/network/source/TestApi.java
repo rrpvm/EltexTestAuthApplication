@@ -2,6 +2,7 @@ package com.rrpvm.authtesh.data.network.source;
 
 
 import com.rrpvm.authtesh.data.network.dto.GetTokenDto;
+import com.rrpvm.authtesh.data.network.dto.GetUserInfoDto;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -22,6 +23,6 @@ public interface TestApi {
     );
 
     @GET("user")
-    CompletableFuture<GetTokenDto> getUserInfo();
+    CompletableFuture<GetUserInfoDto> getUserInfo();
 
 }
