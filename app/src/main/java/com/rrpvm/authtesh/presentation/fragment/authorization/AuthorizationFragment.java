@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.rrpvm.authtesh.R;
 import com.rrpvm.authtesh.databinding.FragmentAuthorizationBinding;
@@ -87,11 +88,16 @@ public class AuthorizationFragment extends Fragment {
         });
         viewModel.getViewEffects().observe(this.getViewLifecycleOwner(), loginViewEffect -> {
             if (loginViewEffect instanceof AuthorizationViewEffect.AuthenticationSuccess) {
-                Toast.makeText(getContext(), "success", Toast.LENGTH_LONG).show();
+                actionGoUserScreen();
+                Toast.makeText(getContext(), R.string.authorization_success, Toast.LENGTH_LONG).show();
             } else if (loginViewEffect instanceof AuthorizationViewEffect.ShowText) {
                 ToastHelper.showText(((AuthorizationViewEffect.ShowText) loginViewEffect).uiText, getContext());
             }
         });
+    }
+
+    private void actionGoUserScreen() {
+        NavHostFragment.findNavController(this).navigate(AuthorizationFragmentDirections.actionFragmentAutorizeToFragmentUserScreen());
     }
 
     @Override

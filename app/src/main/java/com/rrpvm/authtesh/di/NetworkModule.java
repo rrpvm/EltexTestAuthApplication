@@ -3,17 +3,15 @@ package com.rrpvm.authtesh.di;
 import android.util.Log;
 
 import com.rrpvm.authtesh.BuildConfig;
-import com.rrpvm.authtesh.data.network.TestApi;
+import com.rrpvm.authtesh.data.network.source.TestApi;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Qualifier;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
-import dagger.hilt.android.scopes.ViewModelScoped;
 import dagger.hilt.components.SingletonComponent;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

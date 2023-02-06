@@ -19,5 +19,18 @@
     <fragment
         android:id="@+id/fragment_autorize"
         android:name="com.rrpvm.authtesh.presentation.fragment.authorization.AuthorizationFragment"
-        tools:layout="@layout/fragment_authorization" />
+        tools:layout="@layout/fragment_authorization" >
+        <action
+            android:id="@+id/action_fragment_autorize_to_fragment_user_screen"
+            app:destination="@id/fragment_user_screen"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_user_screen"
+        android:name="com.rrpvm.authtesh.presentation.fragment.user_info.UserInfoFragment"
+        tools:layout="@layout/fragment_user_info" />
 </navigation>

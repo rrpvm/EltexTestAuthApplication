@@ -27,6 +27,7 @@ public class LoginViewModel extends ViewModel {
     public void onInit() {
         Optional<String> token = getCurrentTokenUseCase.invoke();
         if (token.isPresent()) {
+
             //do load users(check for key not expired)
         } else {
             mViewEffects.postValue(new LoginViewEffect.AuthenticationErrorEffect());

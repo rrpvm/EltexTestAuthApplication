@@ -1,6 +1,7 @@
 package com.rrpvm.authtesh.data.network.dto;
 
 import com.google.gson.annotations.SerializedName;
+import com.rrpvm.authtesh.domain.model.TokenModel;
 
 public class GetTokenDto {
     @SerializedName("access_token")
@@ -17,5 +18,9 @@ public class GetTokenDto {
         this.mTokenType = mTokenType;
         this.mExpiresIn = mExpiresIn;
         this.mScope = mScope;
+    }
+
+    public TokenModel toTokenModel() {
+        return new TokenModel(mAccessToken, mTokenType, mExpiresIn, mScope);
     }
 }

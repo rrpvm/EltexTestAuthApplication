@@ -65,9 +65,14 @@ public class AuthorizationViewModel extends ViewModel {
                 mViewState.postValue(mViewState.getValue().setLastError(true));
                 mViewEffects.setValue(new AuthorizationViewEffect.ShowText(((Resource.ResourceFailed<GetTokenDto>) getTokenDtoResource).getUiText()));
             } else if (getTokenDtoResource instanceof Resource.ResourceSuccess) {
+                onAuthorized(((Resource.ResourceSuccess<GetTokenDto>) getTokenDtoResource).getData());
                 mViewEffects.setValue(new AuthorizationViewEffect.AuthenticationSuccess());
             }
         });
+    }
+
+    private void onAuthorized(GetTokenDto result) {
+        setCurrentTokenUseCase.invoke(result.mAccessToken);
     }
 
     @Override
