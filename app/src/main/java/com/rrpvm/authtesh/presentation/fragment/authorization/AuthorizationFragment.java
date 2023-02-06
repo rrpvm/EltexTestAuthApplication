@@ -28,6 +28,10 @@ public class AuthorizationFragment extends Fragment {
     private FragmentAuthorizationBinding authorizationBinding = null;
     private AuthorizationViewModel viewModel;
 
+    public AuthorizationFragment() {
+
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,10 +1,12 @@
 package com.rrpvm.authtesh.di;
 
-import android.util.Log;
+import static com.rrpvm.authtesh.data.repository.AuthRepositoryImpl.TOKEN_REQUEST_KEY;
+import static com.rrpvm.authtesh.domain.utils.Constants.EMPTY_STRING;
 
+import android.util.Log;
+import com.orhanobut.hawk.Hawk;
 import com.rrpvm.authtesh.BuildConfig;
 import com.rrpvm.authtesh.data.network.source.TestApi;
-
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -13,6 +15,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Converter;
@@ -38,14 +41,27 @@ public class NetworkModule {
 
     @Provides
     @Singleton
+    public Interceptor authenticationInterceptor() {
+        return chain -> chain.proceed(
+                chain.request()
+                        .newBuilder()
+                        .addHeader("Authorization", Hawk.get(TOKEN_REQUEST_KEY) == null ? "Bearer zxc" : "Bearer " + Hawk.get(TOKEN_REQUEST_KEY))
+                        .build()
+        );
+    }
+
+    @Provides
+    @Singleton
     public OkHttpClient provideOkHttpClient(
-            HttpLoggingInterceptor httpLoggingInterceptor
+            HttpLoggingInterceptor httpLoggingInterceptor,
+            Interceptor authenticationInterceptor
     ) {
         return new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(authenticationInterceptor)
                 .cache(null)
                 .build();
     }
@@ -61,7 +77,7 @@ public class NetworkModule {
     @Singleton
     public Retrofit provideRetrofit(OkHttpClient okHttpClient, Converter.Factory converterFactory) {
         return new Retrofit.Builder()
-                .baseUrl(BASE_URL_API)
+                .baseUrl(BuildConfig.BASE_API_URL)
                 .client(okHttpClient)
                 .addConverterFactory(converterFactory)
                 .build();
@@ -73,5 +89,4 @@ public class NetworkModule {
         return retrofit.create(TestApi.class);
     }
 
-    private final static String BASE_URL_API = "http://smart.eltex-co.ru:8271/api/v1/";
 }

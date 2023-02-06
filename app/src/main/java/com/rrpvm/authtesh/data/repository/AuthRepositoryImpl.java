@@ -2,6 +2,7 @@ package com.rrpvm.authtesh.data.repository;
 
 import com.orhanobut.hawk.Hawk;
 import com.rrpvm.authtesh.BuildConfig;
+import com.rrpvm.authtesh.data.network.dto.GetTokenDto;
 import com.rrpvm.authtesh.data.network.source.TestApi;
 import com.rrpvm.authtesh.domain.entity.network.Resource;
 import com.rrpvm.authtesh.domain.model.TokenModel;
@@ -10,6 +11,7 @@ import com.rrpvm.authtesh.domain.repository.BaseRepository;
 
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -25,7 +27,10 @@ public class AuthRepositoryImpl extends BaseRepository implements AuthRepository
 
     @Override
     public Resource<TokenModel> getToken(String username, String password) {
-        return wrapRequest(() -> testApi.getToken("password", username, password, getAuthorizationHeader()).get().toTokenModel());
+        return wrapRequestWithStatusCode(
+                () -> testApi.getToken("password", username, password, getAuthorizationHeader()).get(),
+                GetTokenDto::toTokenModel
+        );
     }
 
     @Override
@@ -45,5 +50,5 @@ public class AuthRepositoryImpl extends BaseRepository implements AuthRepository
         return "Basic YW5kcm9pZC1jbGllbnQ6cGFzc3dvcmQ=";
     }
 
-    private static final String TOKEN_REQUEST_KEY = String.format("%s:access_token", BuildConfig.APP_TAG);
+    public static final String TOKEN_REQUEST_KEY = String.format("%s:access_token", BuildConfig.APP_TAG);
 }

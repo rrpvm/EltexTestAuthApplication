@@ -36,6 +36,7 @@ public class AuthorizationViewModel extends ViewModel {
         return mViewEffects;
     }
 
+
     @Inject
     public AuthorizationViewModel(GetTokenUseCase getTokenUseCase, SetCurrentTokenUseCase setCurrentTokenUseCase) {
         this.getTokenUseCase = getTokenUseCase;

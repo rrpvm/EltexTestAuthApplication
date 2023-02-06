@@ -10,43 +10,49 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 import javax.net.ssl.SSLHandshakeException;
 
 import retrofit2.HttpException;
+import retrofit2.Response;
 
 public class BaseRepository {
-    protected final <T> Resource<T> wrapRequest(Callable<T> request) {
+    // protected final <T> Resource<T> wrapRequestWithStatusCode(Callable<Response<T>> request) {
+    protected final <T, Rp> Resource<Rp> wrapRequestWithStatusCode(Callable<Response<T>> request, Function<T, Rp> mapper) {
         T result;
+        int statusCode = -1;
         try {
             try {
-                result = request.call();
+                Response<T> response = request.call();
+                result = response.body();
+                statusCode = response.code();
             } catch (ExecutionException ep) {
                 throw ep.getCause();
             }
         } catch (SSLHandshakeException e) {
-            return handleIOServerException(e);
+            return handleIOServerException(e, statusCode);
         } catch (IOException e) {
-            return handleIOException(e);
+            return handleIOException(e, statusCode);
         } catch (HttpException e) {
             return handleHttpException(e);
         } catch (Throwable e) {
-            return handleException(e);
+            return handleException(e, statusCode);
         }
-        return new Resource.ResourceSuccess<T>(result);
+        return new Resource.ResourceSuccess<Rp>(mapper.apply(result), statusCode);
     }
 
-    private Resource.ResourceFailed handleIOServerException(SSLHandshakeException e) {
+    private Resource.ResourceFailed handleIOServerException(SSLHandshakeException e, int statusCode) {
         e.printStackTrace();
-        return new Resource.ResourceFailed(UiText.ioErrorServer());
+        return new Resource.ResourceFailed(UiText.ioErrorServer(), statusCode);
     }
 
-    private Resource.ResourceFailed handleIOException(IOException e) {
+    private Resource.ResourceFailed handleIOException(IOException e, int statusCode) {
         e.printStackTrace();
         UiText output;
         if (e.getMessage() == null) output = UiText.ioError();
         else output = new UiText.UiTextDynamicString(e.getMessage());
-        return new Resource.ResourceFailed(output);
+        return new Resource.ResourceFailed(output, statusCode);
     }
 
     private Resource.ResourceFailed handleHttpException(HttpException e) {
@@ -54,11 +60,11 @@ public class BaseRepository {
         UiText output;
         if (e.message() == null) output = UiText.ioErrorServer();
         else output = new UiText.UiTextDynamicString(e.message());
-        return new Resource.ResourceFailed(output);
+        return new Resource.ResourceFailed(output, e.code());
     }
 
-    private Resource.ResourceFailed handleException(Throwable e) {
+    private Resource.ResourceFailed handleException(Throwable e, int statusCode) {
         Log.e(BuildConfig.APP_TAG, e.toString() + Arrays.toString(e.getStackTrace()));
-        return new Resource.ResourceFailed(UiText.unknownError());
+        return new Resource.ResourceFailed(UiText.unknownError(), statusCode);
     }
 }

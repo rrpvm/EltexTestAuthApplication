@@ -18,4 +18,5 @@ public class HouseShortDataDto {
         this.title = title;
         this.level = level;
     }
+
 }

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.rrpvm.authtesh.databinding.FragmentLoginBinding;
+import com.rrpvm.authtesh.domain.model.UserInfoModel;
 import com.rrpvm.authtesh.presentation.fragment.login.data.LoginViewEffect;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -43,6 +44,9 @@ public class LoginFragment extends Fragment {
             if (loginViewEffect instanceof LoginViewEffect.AuthenticationErrorEffect) {
                 actionGoAuthorizationScreen();
             }
+            if (loginViewEffect instanceof LoginViewEffect.AuthenticationSuccess) {
+                actionGoUserScreen(((LoginViewEffect.AuthenticationSuccess) loginViewEffect).userInfoModel);
+            }
         });
         viewModel.onInit();
     }
@@ -51,6 +55,10 @@ public class LoginFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         loginFragmentBinding = null;
+    }
+
+    private void actionGoUserScreen(UserInfoModel userInfoModel) {
+        NavHostFragment.findNavController(this).navigate(LoginFragmentDirections.actionFragmentLoginStartToFragmentUserScreen());
     }
 
     private void actionGoAuthorizationScreen() {
