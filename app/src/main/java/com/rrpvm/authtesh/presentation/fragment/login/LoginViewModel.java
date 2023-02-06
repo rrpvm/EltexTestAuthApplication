@@ -28,7 +28,7 @@ public class LoginViewModel extends ViewModel {
     private final GetCurrentTokenUseCase getCurrentTokenUseCase;
     private final SetCurrentTokenUseCase setCurrentTokenUseCase;
     private final GetUserInfoUseCase getUserInfoUseCase;
-    private MutableLiveData<LoginViewEffect> mViewEffects = new MutableLiveData<>(new LoginViewEffect.InitState());
+    private final MutableLiveData<LoginViewEffect> mViewEffects = new MutableLiveData<>(new LoginViewEffect.InitState());
 
     @Inject
     public LoginViewModel(GetCurrentTokenUseCase getCurrentTokenUseCase, SetCurrentTokenUseCase setCurrentTokenUseCase, GetUserInfoUseCase getUserInfoUseCase) {
@@ -42,14 +42,16 @@ public class LoginViewModel extends ViewModel {
         if (token.isPresent() && !token.get().isEmpty()) {
             Disposable d = Single.just((getUserInfoUseCase.invoke())).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(userInfo -> {
                 if (userInfo instanceof Resource.ResourceFailed) {
-                    setCurrentTokenUseCase.invoke(EMPTY_STRING);
-                    mViewEffects.postValue(new LoginViewEffect.AuthenticationErrorEffect());
+                    if (userInfo.getHttpStatusCode() == 401) {//сброс токена
+                        setCurrentTokenUseCase.invoke(EMPTY_STRING);
+                    }
+                    mViewEffects.setValue(new LoginViewEffect.AuthenticationErrorEffect());
                 } else if (userInfo instanceof Resource.ResourceSuccess) {
-                    mViewEffects.postValue(new LoginViewEffect.AuthenticationSuccess(((Resource.ResourceSuccess<UserInfoModel>) userInfo).getData()));
+                    mViewEffects.setValue(new LoginViewEffect.AuthenticationSuccess(((Resource.ResourceSuccess<UserInfoModel>) userInfo).getData()));
                 }
             });
         } else {
-            mViewEffects.postValue(new LoginViewEffect.AuthenticationErrorEffect());
+            mViewEffects.setValue(new LoginViewEffect.AuthenticationErrorEffect());
         }
     }
 

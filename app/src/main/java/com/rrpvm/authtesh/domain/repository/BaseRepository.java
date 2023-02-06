@@ -19,17 +19,11 @@ import retrofit2.Response;
 
 public class BaseRepository {
     // protected final <T> Resource<T> wrapRequestWithStatusCode(Callable<Response<T>> request) {
-    protected final <T, Rp> Resource<Rp> wrapRequestWithStatusCode(Callable<Response<T>> request, Function<T, Rp> mapper) {
+    protected final <T, Rp> Resource<Rp> wrapRequestWithStatusCode(Callable<T> request, Function<T, Rp> mapper) {
         T result;
         int statusCode = -1;
         try {
-            try {
-                Response<T> response = request.call();
-                result = response.body();
-                statusCode = response.code();
-            } catch (ExecutionException ep) {
-                throw ep.getCause();
-            }
+            result = request.call();
         } catch (SSLHandshakeException e) {
             return handleIOServerException(e, statusCode);
         } catch (IOException e) {

@@ -35,5 +35,10 @@
     <fragment
         android:id="@+id/fragment_user_screen"
         android:name="com.rrpvm.authtesh.presentation.fragment.user_info.UserInfoFragment"
-        tools:layout="@layout/fragment_user_info" />
+        tools:layout="@layout/fragment_user_info">
+        <argument
+            android:name="prefetched_data"
+            app:argType="com.rrpvm.authtesh.domain.model.UserInfoModel"
+            app:nullable="true" />
+    </fragment>
 </navigation>

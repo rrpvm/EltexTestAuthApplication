@@ -101,7 +101,7 @@ public class AuthorizationFragment extends Fragment {
     }
 
     private void actionGoUserScreen() {
-        NavHostFragment.findNavController(this).navigate(AuthorizationFragmentDirections.actionFragmentAutorizeToFragmentUserScreen());
+        NavHostFragment.findNavController(this).navigate(AuthorizationFragmentDirections.actionFragmentAutorizeToFragmentUserScreen(null));
     }
 
     @Override

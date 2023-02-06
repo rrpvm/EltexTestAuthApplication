@@ -58,7 +58,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void actionGoUserScreen(UserInfoModel userInfoModel) {
-        NavHostFragment.findNavController(this).navigate(LoginFragmentDirections.actionFragmentLoginStartToFragmentUserScreen());
+        NavHostFragment.findNavController(this).navigate(LoginFragmentDirections.actionFragmentLoginStartToFragmentUserScreen(userInfoModel));
     }
 
     private void actionGoAuthorizationScreen() {
